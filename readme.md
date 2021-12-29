@@ -1,8 +1,4 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=9999FF&height=200&section=header&text=🌦🌡%20Defi-IA%20:%20Team%20%2B1%20for%20the%20win📈🌞&fontSize=40&animation=twinkling&fontColor=FFFFFF&fontAlignY=30)
-
-<center><div style="font-size:30px ; color: #9999FF">Dorian VOYDIE</br>Thomas FRAMERY</br>Yoann Maarek</div></center>
-
-![footer](https://capsule-render.vercel.app/api?type=waving&color=9999FF&height=150&section=footer&fontSize=50)
+![header](https://capsule-render.vercel.app/api?type=waving&color=9999FF&height=300&section=header&text=🌦🌡Team%20%2B1%20for%20the%20win📈🌞&fontSize=50&animation=twinkling&fontAlignY=38&desc=by%20Dorian%20VOYDIE,%20Thomas%20FRAMERY,%20Yoann%20MAAREK&descAlignY=51&descAlign=62&fontColor=FFFFFF)
 
 # Introduction
 
@@ -29,3 +25,5 @@ Execute this command in a command prompt directly in the main directory
 ```Bash
 python train.py -data defi-ia-2022 -output Results
 ```
+
+![footer](https://capsule-render.vercel.app/api?type=waving&color=9999FF&height=150&section=footer&fontSize=50)
