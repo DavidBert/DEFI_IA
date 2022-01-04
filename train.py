@@ -2,20 +2,22 @@ print("--- Importing Libraries ---")
 # Usuals
 import numpy as np
 import pandas as pd
+import time
+import random
+import warnings
+warnings.filterwarnings('ignore')
 
 # SKLearn
 from sklearn.impute import KNNImputer
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 
-# Filter pandas warnings
-import warnings
-warnings.filterwarnings('ignore')
-
 # Modeling
-import keras
-from keras.models import Sequential
-from keras.layers import BatchNormalization, Dropout, Dense
+from sklearn.neighbors import KNeighborsRegressor
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import RobustScaler,MinMaxScaler, StandardScaler
+from sklearn.model_selection import train_test_split
+
 
 # Downloading dataset :
 # import kaggle
@@ -156,46 +158,41 @@ print("--- Data Preprocessed ---","\n")
 
 # Train Test Split
 
-print("--- Splitting data for training ... ---")
-from sklearn.model_selection import train_test_split
-trainset, valset = train_test_split(trainset, test_size=0.3)
-X_train = trainset.drop(['Ground_truth','Id'],axis=1)
-y_train = trainset['Ground_truth']
-X_test = valset.drop(['Ground_truth','Id'],axis=1)
-y_test = valset['Ground_truth']
-print("--- Splitted in trainset/valset ---")
+# print("--- Splitting data for training ... ---")
+# trainset, valset = train_test_split(trainset, test_size=0.3)
+# X_train = trainset.drop(['Ground_truth','Id'],axis=1)
+# y_train = trainset['Ground_truth']
+# X_test = valset.drop(['Ground_truth','Id'],axis=1)
+# y_test = valset['Ground_truth']
+# print("--- Splitted in trainset/valset ---")
 
-# Neural network
-ann = Sequential()
-ann.add(BatchNormalization())
-ann.add(Dense(350, activation="relu", kernel_initializer='normal'))
-ann.add(Dropout(0.3))
-ann.add(Dense(512, activation="relu", kernel_initializer='normal'))
-ann.add(Dropout(0.3))
-ann.add(Dense(512, activation="relu", kernel_initializer='normal'))
-ann.add(Dropout(0.3))
-ann.add(Dense(128, activation="relu", kernel_initializer='normal'))
-ann.add(Dense(1))
+# Modeling
+reg = KNeighborsRegressor(n_neighbors=3)
 
-# lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-#     initial_learning_rate=1e-2,
-#     decay_steps=10000,
-#     decay_rate=0.9)
-# optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+def compute_mape(model):
+    y_pred_temp = model.predict(x_test) + 1
+    y_test_temp = y_test + 1
+    temp = np.abs(y_pred_temp-y_test_temp)/y_test_temp
+    MAPE = (100/len(temp))*np.sum(temp)
+    return MAPE
 
-###
-keras.backend.set_epsilon(1)
-# Solves problem of really high metric :
-# https://stackoverflow.com/questions/49729522/why-is-the-mean-average-percentage-errormape-extremely-high
+test_size = 0.2  #Rapport de division
+N_trials = 10  #Nombre d'essais
+mapes= []
+for i in range(N_trials):
+    print(f"Trial {i+1}")
+    random_state = random.randint(0, 1000)
+    trainset, testset = train_test_split(trainset, test_size=test_size, random_state=random_state)
+    x_train = trainset.drop(['Ground_truth','Id'],axis=1)
+    y_train = trainset['Ground_truth']
+    x_test = testset.drop(['Ground_truth','Id'],axis=1)
+    y_test = testset['Ground_truth']
+    print("Modèle : KNeighborsRegressor")
+    reg = make_pipeline(StandardScaler(),reg)
+    start = time.time()
+    reg.fit(x_train,y_train)
+    print("Time :",round(time.time()-start,3),"s")
+    mape = compute_mape(reg)  #Calcul MAPE
+    mapes.append(mape)  #Stockage
 
-ann.compile(loss='mean_absolute_percentage_error', optimizer='adam', metrics=['mean_absolute_percentage_error'])
-
-history = ann.fit(X_train,y_train,epochs=2048, batch_size=8192, verbose = 2 ,validation_data=(X_test,y_test))
-print("--- Model Trained ---")
-history_dict = history.history
-
-ann.save("Modele_6.h5")
-print("--- Model Saved ---")
-
-print("Neural Network train MAPE :",round(history_dict['mean_absolute_percentage_error'][-1],2))
-print("Neural Network validation MAPE :",round(history_dict['val_mean_absolute_percentage_error'][-1],2))
+print("MAPE Dictionnary :",mapes)
