@@ -11,13 +11,13 @@ warnings.filterwarnings('ignore')
 from sklearn.impute import KNNImputer
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
+from sklearn.preprocessing import LabelEncoder
 
 # Modeling
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import RobustScaler,MinMaxScaler, StandardScaler
+from sklearn.preprocessing import RobustScaler, MinMaxScaler, StandardScaler
 from sklearn.model_selection import train_test_split
-
 
 # Downloading dataset :
 # import kaggle
@@ -88,15 +88,15 @@ def train_imputation(df):
     # Version 3 : KNNImputer
     # temp = df[["Id","number_sta","month"]]
     # imputer = KNNImputer(n_neighbors=2)
-    # df = pd.DataFrame(imputer.fit_transform(df[["ff","t","td","hu","dd","precip","ws","lat","lon","height_sta"]]))
+    # df = pd.DataFrame(imputer.fit_transform(df[["ff","t","td","hu","dd","precip","lat","lon","height_sta"]]))
     # df = pd.concat([temp,df],axis=1)
-    # df.columns = ["Id","number_sta","month","ff","t","td","hu","dd","precip","ws","lat","lon","height_sta"]
+    # df.columns = ["Id","number_sta","month","ff","t","td","hu","dd","precip","lat","lon","height_sta"]
     
     return df
 
 def test_imputation(df):
     
-    # Version 2 : IterativeImputer
+    # Same as train without "Ground_truth"
     temp = df[["Id","number_sta","month"]]
     imp_mean = IterativeImputer(random_state=0)
     df = pd.DataFrame(imp_mean.fit_transform(df[["ff","t","td","hu","dd","precip","lat","lon","height_sta"]]))
@@ -142,6 +142,9 @@ trainset['month'] = trainset['month'].astype(int)
 trainset = trainset.merge(coords,how="inner",on="number_sta")
 # Imputation
 trainset = train_imputation(trainset)
+encoder = LabelEncoder()
+trainset["number_sta"] = encoder.fit_transform(trainset["number_sta"].astype(int))
+trainset.head()
 print("        - Trainset Created -")
 print("          Shape : ",trainset.shape)
 print("          Columns : ",trainset.columns,"\n")
@@ -156,43 +159,38 @@ print("          Columns : ",testset.columns,"\n")
 
 print("--- Data Preprocessed ---","\n")
 
-# Train Test Split
-
-# print("--- Splitting data for training ... ---")
-# trainset, valset = train_test_split(trainset, test_size=0.3)
-# X_train = trainset.drop(['Ground_truth','Id'],axis=1)
-# y_train = trainset['Ground_truth']
-# X_test = valset.drop(['Ground_truth','Id'],axis=1)
-# y_test = valset['Ground_truth']
-# print("--- Splitted in trainset/valset ---")
-
 # Modeling
-reg = KNeighborsRegressor(n_neighbors=3)
+reg = KNeighborsRegressor(n_neighbors=5)
 
-def compute_mape(model):
-    y_pred_temp = model.predict(x_test) + 1
-    y_test_temp = y_test + 1
-    temp = np.abs(y_pred_temp-y_test_temp)/y_test_temp
-    MAPE = (100/len(temp))*np.sum(temp)
-    return MAPE
 
 test_size = 0.2  #Rapport de division
 N_trials = 10  #Nombre d'essais
 mapes= []
+
 for i in range(N_trials):
     print(f"Trial {i+1}")
+    start = time.time()
+    
+    # Création d'autant de datasets qu'il y a de folds
     random_state = random.randint(0, 1000)
-    trainset, testset = train_test_split(trainset, test_size=test_size, random_state=random_state)
+    trainset, valset = train_test_split(trainset, test_size=test_size, random_state=random_state)
     x_train = trainset.drop(['Ground_truth','Id'],axis=1)
     y_train = trainset['Ground_truth']
-    x_test = testset.drop(['Ground_truth','Id'],axis=1)
-    y_test = testset['Ground_truth']
-    print("Modèle : KNeighborsRegressor")
+    x_test = valset.drop(['Ground_truth','Id'],axis=1)
+    y_test = valset['Ground_truth']
+    
+    # Entrainement du modèle
     reg = make_pipeline(StandardScaler(),reg)
-    start = time.time()
     reg.fit(x_train,y_train)
+    
+    
+    # Prediction
+    y_pred_temp = reg.predict(x_test) + 1
+    y_test_temp = y_test + 1
+    temp = np.abs(y_pred_temp-y_test_temp)/y_test_temp
+    MAPE = (100/len(temp))*np.sum(temp)
+    mapes.append(MAPE)  #Stockage
+    
     print("Time :",round(time.time()-start,3),"s")
-    mape = compute_mape(reg)  #Calcul MAPE
-    mapes.append(mape)  #Stockage
 
-print("MAPE Dictionnary :",mapes)
+print("MAPE for each fold :",mapes)
