@@ -13,6 +13,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Modeling
+import keras
 from keras.models import Sequential
 from keras.layers import BatchNormalization, Dropout, Dense
 
