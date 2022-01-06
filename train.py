@@ -159,27 +159,26 @@ print("          Columns : ",testset.columns,"\n")
 
 print("--- Data Preprocessed ---","\n")
 
-# Modeling
-reg = KNeighborsRegressor(n_neighbors=5)
+
 
 
 test_size = 0.2  #Rapport de division
 N_trials = 10  #Nombre d'essais
 mapes= []
-
+start = time.time()
 for i in range(N_trials):
-    print(f"Trial {i+1}")
-    start = time.time()
-    
+
     # Création d'autant de datasets qu'il y a de folds
     random_state = random.randint(0, 1000)
-    trainset, valset = train_test_split(trainset, test_size=test_size, random_state=random_state)
-    x_train = trainset.drop(['Ground_truth','Id'],axis=1)
-    y_train = trainset['Ground_truth']
-    x_test = valset.drop(['Ground_truth','Id'],axis=1)
-    y_test = valset['Ground_truth']
+    train, val = train_test_split(trainset, test_size=test_size, random_state=random_state)
+    x_train = train.drop(['Ground_truth','Id'],axis=1)
+    y_train = train['Ground_truth']
+    x_test = val.drop(['Ground_truth','Id'],axis=1)
+    y_test = val['Ground_truth']
     
     # Entrainement du modèle
+    # Modeling
+    reg = KNeighborsRegressor(n_neighbors=5)
     reg = make_pipeline(StandardScaler(),reg)
     reg.fit(x_train,y_train)
     
@@ -191,6 +190,6 @@ for i in range(N_trials):
     MAPE = (100/len(temp))*np.sum(temp)
     mapes.append(MAPE)  #Stockage
     
-    print("Time :",round(time.time()-start,3),"s")
+print("Training",N_trials,"folds took :",round(time.time()-start,3),"s")
 
-print("MAPE for each fold :",mapes)
+print("Mean Training MAPE on validation set :",round(np.mean(mapes),2))
