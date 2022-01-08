@@ -83,15 +83,15 @@ print("          Columns : ",testset.columns,"\n")
 
 
 
-test_size = 0.2  #Rapport de division
-N_trials = 10  #Nombre d'essais
+test_size = 0.2  # Rapport de division
+N_trials = 10  # Nombre de Folds
 mapes= []
 start = time.time()
 
 print("--- Training",N_trials,"Folds ---","\n")
 for i in range(N_trials):
     
-    print("     Fold",i," ---","\n")
+    print("     Fold",i,":")
     
     # Création d'autant de datasets qu'il y a de folds
     random_state = random.randint(0, 1000)
@@ -113,6 +113,7 @@ for i in range(N_trials):
     y_test_temp = y_test + 1
     temp = np.abs(y_pred_temp-y_test_temp)/y_test_temp
     MAPE = (100/len(temp))*np.sum(temp)
+    print("   MAPE :",MAPE," ---","\n")
     mapes.append(MAPE)  #Stockage
     
 print("Training",N_trials,"folds took :",round(time.time()-start,3),"s")
