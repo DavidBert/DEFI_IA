@@ -19,6 +19,7 @@ import pickle
 
 # Modeling
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
@@ -102,7 +103,8 @@ for i in range(N_trials):
     
     # Entrainement du modèle
     # Modeling
-    reg = KNeighborsRegressor(n_neighbors=5, n_jobs=-1)
+    # reg = KNeighborsRegressor(n_neighbors=5, n_jobs=-1)
+    reg = DecisionTreeRegressor()
     reg = make_pipeline(StandardScaler(),reg)
     reg.fit(x_train,y_train)
     
@@ -122,6 +124,8 @@ print("--- Making Predictions and Saving Model ---","\n")
 filename = './Results/model.sav'
 pickle.dump(reg, open(filename, 'wb'))
 y_pred = reg.predict(testset.drop("Id",axis=1))
-y_pred.to_csv('./Results/predictions.csv',index=True)
+output = pd.DataFrame(testset['Id'])
+output['Prediction'] = y_pred
+output.to_csv('./Results/predictions.csv',index=True)
 print("        - Prediction saved -")
-print("          Shape : ",y_pred.shape)
+print("          Shape : ",output.shape)
