@@ -2,7 +2,9 @@
 
 # Introduction
 
-## Download the dataset :
+# Execute the script
+
+## 1 Download the dataset :
 
 You can retrieve the dataset from the kaggle competition. Be sure you have access to the competition and have your credentials in a file called "kaggle.json" stored in ~/.kaggle
 
@@ -10,20 +12,23 @@ You can retrieve the dataset from the kaggle competition. Be sure you have acces
 kaggle competitions download -c defi-ia-2022
 ```
 
-## Install the requirements :
+## 2 Install the requirements :
 
-Rou can read the "requirements.txt" file if you want to create an environment and install manually the libraries required. Or you can run the script :
+Create a new environment :
 
-```Bash
-bash install_requirements.sh
+```conda
+conda create --name myenv python
+conda activate myenv
 ```
 
-# Train the Neural Network :
+Install the required libraried using conda or pip
+
+# 3 Train the model :
 
 Execute this command in a command prompt directly in the main directory
 
 ```Bash
-python train.py -data defi-ia-2022 -output Results
+python train.py --data_path defi-ia-2022 --output_folder Results
 ```
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=9999FF&height=150&section=footer&fontSize=50)
