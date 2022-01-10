@@ -19,6 +19,7 @@ Create a new environment :
 ```conda
 conda create --name myenv python
 conda activate myenv
+pip install -r requirements.txt
 ```
 
 Install the required libraried using conda or pip
