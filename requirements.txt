@@ -1,0 +1,13 @@
+# python
+python==3.8.10
+
+# base scientific libraries
+numpy
+pandas
+
+# machine learning
+scikit-learn
+tensorflow
+
+# google drive
+gdown
