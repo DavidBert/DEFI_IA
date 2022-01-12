@@ -24,11 +24,18 @@ conda activate myenv
 pip install -r requirements.txt
 ```
 
+Here is a gif to show you the commands :
+
+![media](Media/Installation.gif)
+
 Install the required libraried using conda or pip
 
 # 3 Train the model :
 
 Execute this command in a command prompt directly in the main directory
+
+<div style="color:#db516d">Warning : This stage can take up to 5 minutes</div>
+<br>
 
 ```Bash
 python train.py --data_path defi-ia-2022 --output_folder Results
