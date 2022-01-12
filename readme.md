@@ -2,6 +2,8 @@
 
 # Introduction
 
+We limited ourselves to the data present on Kaggle to realize this pipeline. You will find the details of the reasoning in the report entitled REPORT.PDF, in particular on the addition of the data present on the MeteoNet site: https://meteonet.umr-cnrm.fr/
+
 # Execute the script
 
 ## 1 Download the dataset :
@@ -19,6 +21,7 @@ Create a new environment :
 ```conda
 conda create --name myenv python
 conda activate myenv
+pip install -r requirements.txt
 ```
 
 Install the required libraried using conda or pip
