@@ -34,11 +34,15 @@ Install the required libraried using conda or pip
 
 Execute this command in a command prompt directly in the main directory
 
-<div style="color:#db516d">Warning : This stage can take up to 5 minutes</div>
+<div style="color:#db516d">Warning : This stage can take up to 5 minutes depending on your hardware</div>
 <br>
 
 ```Bash
 python train.py --data_path defi-ia-2022 --output_folder Results
 ```
+
+Here is a gif to show you how the train is supposed to behave :
+
+![media](Media/Training.gif)
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=9999FF&height=150&section=footer&fontSize=50)
