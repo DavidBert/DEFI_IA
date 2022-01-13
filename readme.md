@@ -21,6 +21,7 @@ Create a new environment :
 ```conda
 conda create --name myenv python
 conda activate myenv
+conda install pip
 pip install -r requirements.txt
 ```
 
