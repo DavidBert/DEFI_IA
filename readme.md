@@ -27,7 +27,11 @@ pip install -r requirements.txt
 
 Here is a gif to show you the commands :
 
+<center>
+
 ![media](Media/Installation.gif)
+
+</center>
 
 Install the required libraried using conda or pip
 
@@ -44,6 +48,10 @@ python train.py --data_path defi-ia-2022 --output_folder Results
 
 Here is a gif to show you how the train is supposed to behave :
 
+<center>
+
 ![media](Media/Training.gif)
+
+</center>
 
 ![footer](https://capsule-render.vercel.app/api?type=waving&color=9999FF&height=150&section=footer&fontSize=50)
