@@ -15,12 +15,11 @@ N.B the data contained in the data folder has been preprocessed for the model
 #### 1) Installing the environment
 In this project we have used docker and docker compose to facilitate the use and the portability of the program. In order to execute the program you have to install Docker. Installation instructions can be found on this link [Docker](https://docs.docker.com/get-docker/]) you have also to install docker-compose. In windows systems, Docker-compose is include in docker no things to install. In linux or mac systems, installation instructions can be found here [docker-compose](https://docs.docker.com/compose/install/) 
 
-#### 2) download data
-go to train/data folder and run these commands 
+#### 2) download data 
 
-wget https://drive.google.com/file/d/1wp55CCp_zzNanFia6ZRFL8A3CSTYTFoy/view?usp=sharing
-wget https://drive.google.com/file/d/1Xu91vjdfLq9G6ZRpTcsVQAYYoIJY6V7o/view?usp=sharing
-
+Download X_data.csv: https://drive.google.com/file/d/1wp55CCp_zzNanFia6ZRFL8A3CSTYTFoy/view?usp=sharing
+Download X_test.csv: https://drive.google.com/file/d/1Xu91vjdfLq9G6ZRpTcsVQAYYoIJY6V7o/view?usp=sharing
+and put the two files in train/data
 
 #### 3) Build the environment
 Return to the train folder and run this command to build the docker image that contains all the required libraries.
