@@ -266,8 +266,7 @@ def Y_station(fichier_csv, journées):
     
     return Y_station_data
 
-
-
+    
 ##################### Fonctions pour les réseaux de neurones ##################### 
 
 # Création de la Loss function pour tous les réseaux
