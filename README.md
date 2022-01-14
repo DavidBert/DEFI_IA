@@ -44,7 +44,7 @@ Nous avons donc créé un groupe de réseaux de neurones dont chacun des membres
 
 ###################################
 ## Etape 1 : Préparation du dossier qui va accueillir les fichiers pré-traités
-1) Récupérer le zip contenant les fichiers déjà pré-traités sur le lien suivant :  
+1) Récupérer le zip contenant les fichiers déjà pré-traités sur ce [lien](https://drive.google.com/file/d/13uZgNb1D45BAEA9nIIxhOPbDTMgIeoGN/view?usp=sharing) :  
 
 2) Dézipper tous les fichiers dans un dossier dont vous renseignerez le chemin d'accès lors de l'exécution du **train.py**.
 
@@ -68,11 +68,14 @@ Nous avons donc créé un groupe de réseaux de neurones dont chacun des membres
     
 ###################################
 ## Etape 2 : Mise au format des data pré-traitées et entraînement des 4 meilleurs réseaux de neurones du groupe
+```console
+    python train.py --data_path PATH_TO_YOUR_DATA_FOLDER --output_folder PATH_TO_YOUR_OUTPUT_FOLDER
+```
+ L'exécution de la commande ci-dessus va :<br>
+   
+1) mettre au format les datas pré-traitées afin d'avoir les bonnes dimensions des tenseurs d'entrée des différents réseaux de neurones du groupe ;<br>
+2) entraîner sur les différentes données générées précédemment et sauvegarder les weights des réseaux ;
+3) fournir une prédiction sur le X_station_test et/ou X_forecast_test pour chaque réseau ;<br>
+4) se terminer par la génération du fichier final `predictions_ENM_Les_Rainettes.csv` moyenne des 4 prédictions précédentes.
 
-   L'exécution de la commande suivante va mettre au format les datas pré-traitées afin d'avoir les bonnes dimensions des tenseurs d'entrée des différents réseaux de neurones du groupe.<br>
-   Puis elle va les entraîner sur les différentes données de Train et fournira une prédiction sur le X_station_test et/ou X_forecast_test pour chaque réseau.<br>
-   Cette procédure se terminera par la génération du fichier final `predictions_ENM_Les_Rainettes.csv` moyenne des 4 prédictions précédentes.
-
-   ```console
-    python train.py --data_path PATH_TO_YOUR_DATA_FOLDER --output_folder PATH_TO_YOUR_DATA_FOLDER
-    ```
+   
