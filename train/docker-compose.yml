@@ -1,0 +1,7 @@
+version:  '3'
+services:
+  tensorflow:
+      build: tensorflow
+      volumes:
+        - ./:/home
+      container_name: "tensorflow"
