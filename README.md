@@ -51,3 +51,70 @@ If the command does not work for me you won't have the points associated to the 
 
 You will be evaluated on the clarity of your code, I do not expect a single file doing all the work!
 
+---
+
+## Setup
+
+In order to execute our code, you must first create a virtual environment using
+
+```console
+py -m pip install -r requirements.txt
+```
+
+if you're on Windows, or
+
+```console
+python3 -m pip install -r requirements.txt
+```
+
+if you're on Unix/macOS. Both assume that you have a previous installation of Python 3.
+
+Next, the downloaded data from Kaggle is saved in a folder called 'Data' with the original structure, which is:
+
+```console
++---Data
+|   +---Other
+|   |   \---Other
+|   +---Presentation_slides
+|   |   \---Presentation_slides
+|   +---Test
+|   |   \---Test
+|   |       +---Baselines
+|   |       \---X_forecast
+|   \---Train
+|       \---Train
+|           +---Baselines
+|           \---X_forecast
+```
+
+If you want to download all the data, and do all the preprocessing steps, execute the [preprocess](preprocess.py) script by simply running the command:
+
+```console
+python preprocessing.py
+```
+
+**before** calling the [train.py](train.py) script. But note that this is an __very__ long process as the data are large.
+
+Otherwise, you may call the training script directly, which retrieves the data that has already been preprocessed.
+
+## Our files
+
+### Preprocessing steps
+
+We decided to create several `utils` files, as there are many preprocessing steps. You can follow them inside the [preprocess.py](preprocess.py) script:
+
+1. First, we download all the data, both from Kaggle and from MeteoNet's server.
+2. Then, we open all the .nc files and create a data frame.
+3. We follow with feature engineering: we create columns with the daily mean and standard deviation of each day for each station.
+4. Then, we fill-in all the missing data of X_stations by interpolating the values using the weighted average data of the closest stations.
+5. For the 2D and 3D Arpege data, we compute the seasonal mean, i.e., the mean for each season of the year: winter, spring, summer, and fall, to impute the missing values of this data.
+6. Before the final step, we merge the X_stations and the 2D and 3D Arpege files into a single data frame.
+7. Finally, we merge the X_train and Y_train data frames, and we create the final data to be used for training.
+
+### MLP model
+
+Our neural network, used in the Kaggle competition is defined inside the [train.py](train.py) script. This script also saves the model and the predictions inside the `Results` folder.
+
+## Results
+
+We obtained our results using a CPU version of tensorflow (2.3.0) on Windows 10. The training step took on average 60 seconds.
