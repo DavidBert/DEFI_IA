@@ -14,7 +14,7 @@ You will find:
 * **preprocess.py** that manages preprocessing functions for train and test datasets
 * **models.py** contains the models to train
 
-How to reproduce the results :
+How to reproduce the results:
 1. Have Python 3 installed
 2. Run the following command to access the Kaggle API using the command line: 
  ```sh
