@@ -1,53 +1,34 @@
-# DEFI_IA
-Git repository for the evaluation of the AI frameworks DEFI IA project 2021-2022
+# Defi-IA-2022
+Défi IA 2022 Kaggle - Local prediction of rainfall using data measure on ground stations and results from MétéoFrance predictive models (Arpège_2D). 
 
-## How to submit your work
-You must submit your code as a pull request to this repo.
+This code achieved a MAPE score of 26.57 (16th/84) on the public leaderboard and the competition results were a MAPE of 30.13, ranked 27th place (private leaderboard).
 
-First make a fork of this repo:
-![](images/fork.png)
-Use git to clone your code in a local repository.
-Create a new branch named with your team number (according to this [file](https://docs.google.com/spreadsheets/d/1UHll3nVPrjPy9EfPd-dGmGaxQGMsWdlEL-FCNmTmgn8/edit#gid=907028874))
-Add and comit your code to this branch and push the branch to your forked repository.  
-Then go to your fork on github, selct your branch and create a pull request.
-![](images/pull_request.png).
-Add your team members in the description and create your pull request.  
-![](images/pull_request2.png)
-Send me an email at bertoin@insa-toulouse.fr to warn me about your pull request.
-I'll get back to you so you can be sure that everything is ok.
+## You can skip to the training models part and directly downlaod final data
 
-## What should it contain?
+## Instructions to download the data, works on linux:
+- Create your account on Kaggle
+- Get your API credentials 
 
-Your work must contain:
-
-* the pdf file for your report.
-* a file ```requirement.txt``` containing all the required librairies to run your code.  
-Be sure that all the needed librairies are present in this file.
-Also verify that no unused library is present in this file.
-
-* a python script `train.py` that will train your model and outputs your final trained model as a pickle file and your predictions on the test data in a csv format.
-Your script must take as argument:
-    *  `--data_path`: the path to a folder containing all the data files.
-    Before executing your script, I will create a folder containing all the unziped files obtained when calling the following command: 
-    ```console
-    kaggle competitions download -c defi-ia-2022
-    ```
-    *   `--output_folder`: the path to an input folder where to output your model and predictions.
-    * a file README.md describing a little your code (for exemple which file/class does the data preprocessing, which one defines your model ...)
-
-I will call your script with the following command:
-```console
-python train.py --data_path Data --output_folder Results
-``` 
-Before running this command I will create a virtual env and install the libraries in the `requirements.txt` file.
-I expect your code to run without any bug and to produce the desired outputs.  
-
-Please check that it is the case: create a new virtual environment, clone your repo and run the command:
-
-```console
-python train.py --data_path PATH_TO_YOUR_DATA_FOLDER --output_folder PATH_TO_OUTPUT_FOLDER
-``` 
-If the command does not work for me you won't have the points associated to the coding part of the project.
-
-You will be evaluated on the clarity of your code, I do not expect a single file doing all the work!
-
+" To use the Kaggle API, sign up for a Kaggle account at https://www.kaggle.com. Then go to the 'Account' tab of your user profile (https://www.kaggle.com/<username>/account) and select 'Create API Token'. This will trigger the download of kaggle.json, a file containing your API credentials. Place this file in the location ~/.kaggle/kaggle.json " and set its rwx rights to 600.
+  
+  - Be sure to have the `kaggle` command installed using `pip install kaggle`. If the kaggle command cannot be found, add `~/.local/bin` to your path.
+  - Run `dowload_data.sh` in your working directory. A ./DATA_RAINFALL/ directory will be created containing all the data from ground stations and Arpege.
+  
+## Preprocessing the data:
+  
+  - Install the `xarray` python library (plus `netcdf4` and  `h5netcdf` if necessary) to collect Arpege_2D data
+  - Open your terminal in your working directory and run the following command : `python preprocess_train.py your_working_directory_path`. Make sure to replace `your_working_directory_path` by your working directory path ! The script fills nans from X_station_train and Y_train, merges X_station_train with 2D_arpege_train and then reshapes the training features to hourly features (all features at each hour). Two files full_X_train.csv and full_Y_train.csv are created in the directory ./DATA_RAINFALL/Train/Train/. Preprocessing the training set is time-consumming (approximately 6 hours). 
+   - Open your terminal in your working directory and run the following command : `python preprocess_test.py your_working_directory_path`. Make sure to replace `your_working_directory_path` by your working directory path ! The script fills nans in X_station_test, merges X_station_test with 2D_arpege_test and then reshapes the features to hourly features. A file full_X_test.csv is created in the directory ./DATA_RAINFALL/Test/Test/. Preprocessing the test set could last for around 30 minutes. Note that Y_test is not provided by MeteoFrance. 
+  
+## Training models and making predictions
+  
+  - **if you didnt run the preprocess part till the end :** Download the "Data.zip" file that contains the preprocessed data from : https://drive.google.com/file/d/10xF6B2JB-cEftuSWBBWLvF_FETbXBVpc/view?usp=sharing.
+  Unzip the file, make sure the "Data" folder is next to `train.py`. This folder contains the data after preprocessing.
+  
+  -Run the following command, this runs the feature engineering before training on MLP and LGBM models, creating prediction .csv files afterwards in results. The training      takes 10 to 15 minutes.
+  
+  ```
+  python train.py --data_path Data --output_folder Results
+  
+  ```
+  
