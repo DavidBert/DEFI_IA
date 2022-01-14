@@ -277,17 +277,18 @@ def build_MAPE(y_true, y_pred):
 
 
 
-def entrainement_NN(NN, optimizer, loss, inputs, outputs, epochs, batch_size,verbose = 1,data_path):
+def entrainement_NN(NN, optimizer, loss, inputs, outputs, epochs, batch_size,verbose = 1,output_folder,name_model):
   
   NN.compile(optimizer=optimizer,
               loss=loss,
               metrics=build_MAPE)
   
-  history = NN.fit(inputs,outputs,
+  NN.fit(inputs,outputs,
                    epochs=epochs,
                    batch_size=batch_size,
                    verbose = verbose,
                    validation_split=0.2)
+  NN.save_weights(output_folder+'/'+name_model+'.h5')
   
 
     
@@ -347,7 +348,7 @@ def Convolution_5():
 
 
 # Fonction Mise en forme des prévisions de précipitations.
-def mise_en_forme_prediction_kagglev2(Y_forecast_model,data_path):
+def mise_en_forme_prediction_kagglev2(Y_forecast_model,output_folder):
   predictions = np.empty((85140,1))
   predictions[:] = np.nan
 
@@ -368,4 +369,4 @@ def mise_en_forme_prediction_kagglev2(Y_forecast_model,data_path):
   # Création du fichier final de soumission des résultats du défi IA sur Kaggle.
   submission_github = np.concatenate((np.reshape(baseline_observation[:,0], (-1,1)), predictions), axis=1)
 
-  pd.DataFrame(submission_github.reshape((len(submission_github),-1))).to_csv(data_path+'/predictions_ENM_Les_Rainettes.csv')
+  pd.DataFrame(submission_github.reshape((len(submission_github),-1))).to_csv(output_folder+'/predictions_ENM_Les_Rainettes.csv')
