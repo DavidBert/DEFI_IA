@@ -1,0 +1,13 @@
+mlp_model/
+Results/
+Data/
+
+.vscode/
+__pycache__/
+# test virtual environment
+test/
+
+__init__.py
+*.nc
+*.tar.gz
+*.pdf
