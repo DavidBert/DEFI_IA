@@ -278,16 +278,17 @@ def build_MAPE(y_true, y_pred):
 
 def entrainement_NN(NN, optimizer, loss, inputs, outputs, epochs, batch_size,verbose = 1,output_folder,name_model):
   
-  NN.compile(optimizer=optimizer,
+    NN.compile(optimizer=optimizer,
               loss=loss,
               metrics=build_MAPE)
   
-  NN.fit(inputs,outputs,
+    NN.fit(inputs,outputs,
                    epochs=epochs,
                    batch_size=batch_size,
                    verbose = verbose,
                    validation_split=0.2)
-  NN.save_weights(output_folder+'/'+name_model+'.h5')
+    
+    NN.save_weights(output_folder+'/'+name_model+'.h5')
   
 
     
@@ -331,6 +332,20 @@ def sequential_3_5():
 
 
 
+def lstm_4():  
+  decoder_inputs = Input(shape=(24, 7), name='decoder_inputs')
+
+  decoder_lstm = LSTM(64, return_sequences=True, name='lstm')(decoder_inputs)
+  decoder_lstm = TimeDistributed(Dense(16, activation='relu'))(decoder_lstm)
+  decoder_lstm = TimeDistributed(Dense(1, activation='relu'))(decoder_lstm)
+  decoder_lstm = Flatten()(decoder_lstm)
+
+  decoder_outputs = sum(decoder_lstm, axis=1, keepdims=True)
+
+  return Model(decoder_inputs, decoder_outputs, name='LSTM_4')
+
+
+
 def Convolution_5():
   inputs = Input(shape=(24,11), name='inputs')
   x = Conv1D(32,7, activation='relu')(inputs)
@@ -368,4 +383,4 @@ def mise_en_forme_prediction_kagglev2(Y_forecast_model,output_folder):
   # Création du fichier final de soumission des résultats du défi IA sur Kaggle.
   submission_github = np.concatenate((np.reshape(baseline_observation[:,0], (-1,1)), predictions), axis=1)
 
-  pd.DataFrame(submission_github.reshape((len(submission_github),-1))).to_csv(output_folder+'/predictions_ENM_Les_Rainettes.csv')
+  pd.DataFrame(submission_github.reshape((len(submission_github),-1))).to_csv(output_folder+'/predictions_ENM_Les_Rainettes.csv',index=False,header = ['Id','Prediction'])
