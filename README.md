@@ -1,53 +1,64 @@
-# DEFI_IA
-Git repository for the evaluation of the AI frameworks DEFI IA project 2021-2022
+# Table of contents
+1. [Objective](#objective)
+2. [Train and generate result file](#train)
+3. [Preprocessing](#preprocessing)
+    1. [Extrcat forecasts](#forecast)
+    2. [Remove NaN](#nan)
+    3. [Prepare data for the model](#prepare_data)
 
-## How to submit your work
-You must submit your code as a pull request to this repo.
+## Objective <a name="objective"></a>
+Predict the accumulated daily rainfall (on 24h) on ground stations which are distributed on the North-West quarter of France. These stations are equipped with different Meteo instruments to measure temperature, wind, rain, etc.
 
-First make a fork of this repo:
-![](images/fork.png)
-Use git to clone your code in a local repository.
-Create a new branch named with your team number (according to this [file](https://docs.google.com/spreadsheets/d/1UHll3nVPrjPy9EfPd-dGmGaxQGMsWdlEL-FCNmTmgn8/edit#gid=907028874))
-Add and comit your code to this branch and push the branch to your forked repository.  
-Then go to your fork on github, selct your branch and create a pull request.
-![](images/pull_request.png).
-Add your team members in the description and create your pull request.  
-![](images/pull_request2.png)
-Send me an email at bertoin@insa-toulouse.fr to warn me about your pull request.
-I'll get back to you so you can be sure that everything is ok.
+## Train and generate result file <a name="train"></a>
+N.B the data contained in the data folder has been preprocessed for the model
 
-## What should it contain?
+#### 1) Installing the environment
+In this project we have used docker and docker compose to facilitate the use and the portability of the program. In order to execute the program you have to install Docker. Installation instructions can be found on this link [Docker](https://docs.docker.com/get-docker/]) you have also to install docker-compose. In windows systems, Docker-compose is include in docker no things to install. In linux or mac systems, installation instructions can be found here [docker-compose](https://docs.docker.com/compose/install/) 
 
-Your work must contain:
+#### 2) download data 
 
-* the pdf file for your report.
-* a file ```requirement.txt``` containing all the required librairies to run your code.  
-Be sure that all the needed librairies are present in this file.
-Also verify that no unused library is present in this file.
+Download X_data.csv: https://drive.google.com/file/d/1Xu91vjdfLq9G6ZRpTcsVQAYYoIJY6V7o/view?usp=sharing 
+Download X_test.csv: https://drive.google.com/file/d/1wp55CCp_zzNanFia6ZRFL8A3CSTYTFoy/view?usp=sharing
+and put the two files in train/data
 
-* a python script `train.py` that will train your model and outputs your final trained model as a pickle file and your predictions on the test data in a csv format.
-Your script must take as argument:
-    *  `--data_path`: the path to a folder containing all the data files.
-    Before executing your script, I will create a folder containing all the unziped files obtained when calling the following command: 
-    ```console
-    kaggle competitions download -c defi-ia-2022
-    ```
-    *   `--output_folder`: the path to an input folder where to output your model and predictions.
-    * a file README.md describing a little your code (for exemple which file/class does the data preprocessing, which one defines your model ...)
+#### 3) Build the environment
+Return to the train folder and run this command to build the docker image that contains all the required libraries.
 
-I will call your script with the following command:
-```console
-python train.py --data_path Data --output_folder Results
-``` 
-Before running this command I will create a virtual env and install the libraries in the `requirements.txt` file.
-I expect your code to run without any bug and to produce the desired outputs.  
+`docker-compose build`
 
-Please check that it is the case: create a new virtual environment, clone your repo and run the command:
+#### 4) Launch the program
 
-```console
-python train.py --data_path PATH_TO_YOUR_DATA_FOLDER --output_folder PATH_TO_OUTPUT_FOLDER
-``` 
-If the command does not work for me you won't have the points associated to the coding part of the project.
+To run train and generate test errors predictions run this command:
 
-You will be evaluated on the clarity of your code, I do not expect a single file doing all the work!
+`docker-compose run tensorflow python /home/train.py --data_path data --output_folder results`
+
+## Preprocessing <a name="preprocessing"></a>
+All programs of the preprocessing are included  in the preprocessing folder. This folder includes also requirement.txt file that list required libraries  to execute programs
+
+### Extract  forecasts <a name="forecast"></a>
+This section describes  how to extract forecasts from nc files and compute to forecasts for each station. Programs are located in preprocessing/stations_forecasts_extractions. data and results files are in data subfolder
+
+* `test_read_nc_file.py` : read and show the metadata of netCDF file
+* `extract_forecats.py` : read nc files and generate a csv file for each day that contains the forecasts for each GSP point
+* `forecast_station.py` : compute the forecast for each station using stations positions and the forecasts generated by `extract_forecats.py`  
+* `compute_y_error.py` : compute and generate the y_error.csv file from Y_forecasts.csv  and Y_ground_truth.csv
+
+
+### Remove NaNs <a name="nan"></a>
+We have two types of NaNs: 
+
+* Vertical NaN: for some stations in some days, we don't have data for 24 hours
+* Horizontal NaN: there is some missing measurements
+
+To handle this NaNs we have used theses scripts:
+
+* `horizontal_clean.py` : replace horizontal NaNs by the mean of the column
+* `vertical_clean.py`: find and remove day of stations if we don't have 24 hours
+* `verify_vertical_clean.py`: verify that we don't have vertical NaNs in X_data.csv
+
+### Prepare data for the model <a name="prepare_data"></a>
+In this part we prepare the training and test data for the model and sort Y_ files according to X_ files.
+
+* `prepare_y_train.py`: prepare and sort the y_train.csv according to the x_data file
+* `prepare_x_test_data` : replace horizontal NaNs in test data by the mean of the column and add split the Id column to create three columns: Station, day_index and hour
 
