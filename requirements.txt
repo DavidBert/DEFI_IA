@@ -4,11 +4,8 @@ matplotlib
 numpy
 scipy
 xarray
-time
 argparse
 pandas
-gc
-csv
 netcdf4
 tensorflow
 tensorflow.keras
