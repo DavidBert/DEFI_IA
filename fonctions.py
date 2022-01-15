@@ -10,52 +10,52 @@ def X_forecast_jour(ds):
     # Redimensionnement du tenseur des prévisions modèle.
     prévisions_modèle = np.zeros((ds_np.shape[1], ds_np.shape[2], ds_np.shape[3], ds_np.shape[0]))
     for i in range(ds_np.shape[0]):
-      prévisions_modèle[:,:,:,i] = ds_np[i,:,:,:]
+        prévisions_modèle[:,:,:,i] = ds_np[i,:,:,:]
     
     # Fonction qui renvoie à partir des coordonnées d'une station de mesure, les coordonnées des points de grille 
     # du modèle AROME qui encadrent la station, ainsi que l'indice dans la liste des prévisions modèle de ces points de grille.
     def chgt_base(point):
-      x, y = point[0], point[1]
+        x, y = point[0], point[1]
 
-      z1 = (51.896 - x)/0.025
-      ind_lat_inf, ind_lat_sup = int(z1), int(z1)+1
-      lat_inf, lat_sup = np.round(51.896 - ind_lat_inf*0.025,3) , np.round(51.896 - ind_lat_sup*0.025, 3)
+        z1 = (51.896 - x)/0.025
+        ind_lat_inf, ind_lat_sup = int(z1), int(z1)+1
+        lat_inf, lat_sup = np.round(51.896 - ind_lat_inf*0.025,3) , np.round(51.896 - ind_lat_sup*0.025, 3)
 
-      z2 = (y + 5.842)/0.025
-      ind_long_inf, ind_long_sup = int(z2), int(z2)+1
-      long_inf, long_sup = np.round(-5.842 + ind_long_inf*0.025,3) , np.round(-5.842 + ind_long_sup*0.025, 3)
+        z2 = (y + 5.842)/0.025
+        ind_long_inf, ind_long_sup = int(z2), int(z2)+1
+        long_inf, long_sup = np.round(-5.842 + ind_long_inf*0.025,3) , np.round(-5.842 + ind_long_sup*0.025, 3)
 
-      return [[ind_lat_inf, lat_inf], [ind_lat_sup, lat_sup], [ind_long_inf, long_inf], [ind_long_sup, long_sup]]
+        return [[ind_lat_inf, lat_inf], [ind_lat_sup, lat_sup], [ind_long_inf, long_inf], [ind_long_sup, long_sup]]
     
     prévisions_stations = np.zeros((len(coordonnees_stations), prévisions_modèle.shape[0], prévisions_modèle.shape[-1]))
     
     # Création du tenseur des prévisions modèle interpolées sur les stations de mesure.
     for space in range(len(coordonnees_stations)):
-      L = chgt_base(coordonnees_stations[space])
+        L = chgt_base(coordonnees_stations[space])
 
-      coord_NO = [L[0][1],L[2][1]]
-      coord_NE = [L[0][1],L[3][1]]
-      coord_SO = [L[1][1],L[2][1]]
-      coord_SE = [L[1][1],L[3][1]]
+        coord_NO = [L[0][1],L[2][1]]
+        coord_NE = [L[0][1],L[3][1]]
+        coord_SO = [L[1][1],L[2][1]]
+        coord_SE = [L[1][1],L[3][1]]
 
-      tree = spatial.KDTree([(coordonnees_stations[space,0], coordonnees_stations[space,1])])
-      dist_NO = tree.query(coord_NO)[0]
-      dist_NE = tree.query(coord_NE)[0]
-      dist_SO = tree.query(coord_SO)[0]
-      dist_SE = tree.query(coord_SE)[0]
+        tree = spatial.KDTree([(coordonnees_stations[space,0], coordonnees_stations[space,1])])
+        dist_NO = tree.query(coord_NO)[0]
+        dist_NE = tree.query(coord_NE)[0]
+        dist_SO = tree.query(coord_SO)[0]
+        dist_SE = tree.query(coord_SE)[0]
 
-      s = 1/dist_NO**2 + 1/dist_NE**2 + 1/dist_SO**2 + 1/dist_SE**2
+        s = 1/dist_NO**2 + 1/dist_NE**2 + 1/dist_SO**2 + 1/dist_SE**2
 
-      for time in range(prévisions_modèle.shape[0]):
-        for pred in range(prévisions_modèle.shape[-1]):
-          prev_NO = prévisions_modèle[time, L[0][0], L[2][0], pred]
-          prev_NE = prévisions_modèle[time, L[0][0], L[3][0], pred]
-          prev_SO = prévisions_modèle[time, L[1][0], L[2][0], pred]
-          prev_SE = prévisions_modèle[time, L[1][0], L[3][0], pred]
+        for time in range(prévisions_modèle.shape[0]):
+            for pred in range(prévisions_modèle.shape[-1]):
+                prev_NO = prévisions_modèle[time, L[0][0], L[2][0], pred]
+                prev_NE = prévisions_modèle[time, L[0][0], L[3][0], pred]
+                prev_SO = prévisions_modèle[time, L[1][0], L[2][0], pred]
+                prev_SE = prévisions_modèle[time, L[1][0], L[3][0], pred]
 
-          prev = (prev_NO/dist_NO**2 + prev_NE/dist_NE**2 + prev_SO/dist_SO**2 + prev_SE/dist_SE**2) / s
+                prev = (prev_NO/dist_NO**2 + prev_NE/dist_NE**2 + prev_SO/dist_SO**2 + prev_SE/dist_SE**2) / s
 
-          prévisions_stations[space, time, pred] = prev
+                prévisions_stations[space, time, pred] = prev
     
     return prévisions_stations
 
@@ -116,7 +116,7 @@ def X_station_train(fichier_csv, journées):
     # Les données extraites sont de la forme : (number_station, date, heure, ff, t, td, hu, dd, precip, Id).
     X_station = []
     for row in csv.reader(open(fichier_csv)):
-      X_station.append(row)
+        X_station.append(row)
     X_station = np.asarray(X_station)
     
     # Redimensionnement du **np.array** *X_station* des observations extraites.
@@ -132,20 +132,20 @@ def X_station_train(fichier_csv, journées):
     
     # Mise en forme des données du tenseur X_station.
     for i in range(len(X_station)):
-      X_station[i,1] = X_station[i,3].split(' ')[0]
-      X_station[i,3] = X_station[i,3].split(' ')[1]
+        X_station[i,1] = X_station[i,3].split(' ')[0]
+        X_station[i,3] = X_station[i,3].split(' ')[1]
     for i in range(len(X_station)):
-      X_station[i,2] = np.where(journées == X_station[i,1])[0][0]
-      X_station[i,1] = np.float(X_station[i,1].replace('-',''))//100%100
-      X_station[i,3] = np.float(X_station[i,3].replace(':',''))//10000
+        X_station[i,2] = np.where(journées == X_station[i,1])[0][0]
+        X_station[i,1] = np.float(X_station[i,1].replace('-',''))//100%100
+        X_station[i,3] = np.float(X_station[i,3].replace(':',''))//10000
     
     # On complète le tenseur, en mettant à la place des données manquantes sous la forme de '',
     # la valeur -pi sous forme de string.
     X_station = list(X_station)
     for i in range(len(X_station)):
-      for j in range(len(X_station[0])):
+        for j in range(len(X_station[0])):
         if X_station[i][j] == '':
-          X_station[i][j] = X_station[i][j]+str(-np.pi)
+            X_station[i][j] = X_station[i][j]+str(-np.pi)
     X_station = np.array(X_station)
     
     # On convertit enfin tous les éléments du tenseur X_station pour le moment constitué, du string au float.
@@ -156,30 +156,30 @@ def X_station_train(fichier_csv, journées):
     # au lieu d'être stockées à la date de ce jour J, seront en réalité stockées à la date du jour J-1.
     # On diminue donc d'une unité l'indice du jour correspondant aux observations effectuées à minuit.
     for i in range(len(X_station)):
-      if X_station[i,3] == 0:
-        X_station[i,2] -= 1
+        if X_station[i,3] == 0:
+            X_station[i,2] -= 1
     
     # On complète finalement les trois dernières colonnes précédemment créées et restées vides
     # par les prédicteurs relatifs à la géographie de la station de mesure : la longitude, la latitude, et l'alitude.
     for i in range(len(X_station)):
-      station = np.where(data[:,0] == X_station[i,0])[0][0]
-      X_station[i,10] = coordonnees_stations[station,0]
-      X_station[i,11] = coordonnees_stations[station,1]
-      X_station[i,12] = altitude_stations[station]
+        station = np.where(data[:,0] == X_station[i,0])[0][0]
+        X_station[i,10] = coordonnees_stations[station,0]
+        X_station[i,11] = coordonnees_stations[station,1]
+        X_station[i,12] = altitude_stations[station]
         
     # Production d'un np.array X_station_data qui stockera toutes les données contenues dans le tenseur X_station
     # de manière ordonné selon l'indice du jour, l'indice de la station de mesure, l'heure et les prédicteurs considérés,
     # de la même façon qu'est agencé le tenseur numpy X_forecast_data.
     X_station_data = np.ones((len(journées), len(numéros_stations), 24, 10))*(-np.pi)
     for i in range(X_station.shape[0]):
-      jour = int(X_station[i,2])
-      heure = int(X_station[i,3])
-      station = np.where(numéros_stations == X_station[i,0])[0][0]
-      for pred in range(10):
-        if pred == 0:
-          X_station_data[jour, station, heure, pred] = X_station[i,1]
-        else:
-          X_station_data[jour, station, heure, pred] = X_station[i, pred+3]
+        jour = int(X_station[i,2])
+        heure = int(X_station[i,3])
+        station = np.where(numéros_stations == X_station[i,0])[0][0]
+            for pred in range(10):
+                if pred == 0:
+                    X_station_data[jour, station, heure, pred] = X_station[i,1]
+                else:
+                    X_station_data[jour, station, heure, pred] = X_station[i, pred+3]
     
     return X_station_data
 
@@ -271,8 +271,8 @@ def Y_station(fichier_csv, journées):
 
 # Création de la Loss function pour tous les réseaux
 def build_MAPE(y_true, y_pred):
-  loss = tf.reduce_mean(tf.abs((y_true - y_pred)/(y_true + 1)), axis=-1) * 100
-  return loss
+    loss = tf.reduce_mean(tf.abs((y_true - y_pred)/(y_true + 1)), axis=-1) * 100
+    return loss
 
 
 
@@ -294,66 +294,66 @@ def entrainement_NN(NN, optimizer, loss, inputs, outputs, epochs, batch_size,ver
     
 
 def lstm_3_1():  
-  encoder_inputs = Input(shape=(24, 2), name='encoder_inputs')
+    encoder_inputs = Input(shape=(24, 2), name='encoder_inputs')
 
-  encoder_lstm = LSTM(32, dropout=0.2,recurrent_dropout=0.2, return_sequences=False, name='lstm_1')(encoder_inputs)
-  encoder_lstm_2 = Dense(7, activation='relu', name='dense_1')(encoder_lstm)
-  encoder_lstm_3 = Reshape((1,7))(encoder_lstm_2)
+    encoder_lstm = LSTM(32, dropout=0.2,recurrent_dropout=0.2, return_sequences=False, name='lstm_1')(encoder_inputs)
+    encoder_lstm_2 = Dense(7, activation='relu', name='dense_1')(encoder_lstm)
+    encoder_lstm_3 = Reshape((1,7))(encoder_lstm_2)
 
-  decoder_inputs = Input(shape=(24, 7), name='decoder_inputs')
+    decoder_inputs = Input(shape=(24, 7), name='decoder_inputs')
 
-  decoder_concat = Concatenate(axis=1)([encoder_lstm_3, decoder_inputs])
+    decoder_concat = Concatenate(axis=1)([encoder_lstm_3, decoder_inputs])
 
-  decoder_lstm = LSTM(128,dropout=0.2, recurrent_dropout=0.2, return_sequences=True, name='lstm_2')(decoder_concat)
-  decoder_lstm_2 = Lambda(lambda x: x[:, 1:, :])(decoder_lstm)
+    decoder_lstm = LSTM(128,dropout=0.2, recurrent_dropout=0.2, return_sequences=True, name='lstm_2')(decoder_concat)
+    decoder_lstm_2 = Lambda(lambda x: x[:, 1:, :])(decoder_lstm)
 
-  decoder_lstm_3 = TimeDistributed(Dense(32, activation='relu'))(decoder_lstm_2)
-  decoder_lstm_4 = TimeDistributed(Dense(1, activation='relu'))(decoder_lstm_3)
-  decoder_lstm_4 = Flatten()(decoder_lstm_4)
+    decoder_lstm_3 = TimeDistributed(Dense(32, activation='relu'))(decoder_lstm_2)
+    decoder_lstm_4 = TimeDistributed(Dense(1, activation='relu'))(decoder_lstm_3)
+    decoder_lstm_4 = Flatten()(decoder_lstm_4)
 
-  decoder_outputs = sum(decoder_lstm_4, axis=1, keepdims=True)
+    decoder_outputs = sum(decoder_lstm_4, axis=1, keepdims=True)
 
-  return Model([encoder_inputs, decoder_inputs], decoder_outputs, name='LSTM_3_1')
+    return Model([encoder_inputs, decoder_inputs], decoder_outputs, name='LSTM_3_1')
 
 
 
 def sequential_3_5():
-  inputs = Input(shape=(24,7), name='inputs')
-  x = Flatten()(inputs)
-  x = Dense(64, activation='relu', name='dense_1')(x)
-  x = Dense(128, activation='relu', name='dense_2')(x)
-  x = Dropout(0.2)(x)
-  x = Dense(128, activation='relu', name='dense_3')(x)
-  x = Dropout(0.2)(x)
-  x = Dense(64, activation='relu', name='dense_4')(x)
-  x = Dense(32, activation='relu', name='dense_5')(x)
-  outputs = Dense(1, activation='relu', name='dense_6')(x)
-  return Model(inputs, outputs, name='Sequential_3_5')
+    inputs = Input(shape=(24,7), name='inputs')
+    x = Flatten()(inputs)
+    x = Dense(64, activation='relu', name='dense_1')(x)
+    x = Dense(128, activation='relu', name='dense_2')(x)
+    x = Dropout(0.2)(x)
+    x = Dense(128, activation='relu', name='dense_3')(x)
+    x = Dropout(0.2)(x)
+    x = Dense(64, activation='relu', name='dense_4')(x)
+    x = Dense(32, activation='relu', name='dense_5')(x)
+    outputs = Dense(1, activation='relu', name='dense_6')(x)
+    return Model(inputs, outputs, name='Sequential_3_5')
 
 
 
 def lstm_4():  
-  decoder_inputs = Input(shape=(24, 7), name='decoder_inputs')
+    decoder_inputs = Input(shape=(24, 7), name='decoder_inputs')
 
-  decoder_lstm = LSTM(64, return_sequences=True, name='lstm')(decoder_inputs)
-  decoder_lstm = TimeDistributed(Dense(16, activation='relu'))(decoder_lstm)
-  decoder_lstm = TimeDistributed(Dense(1, activation='relu'))(decoder_lstm)
-  decoder_lstm = Flatten()(decoder_lstm)
+    decoder_lstm = LSTM(64, return_sequences=True, name='lstm')(decoder_inputs)
+    decoder_lstm = TimeDistributed(Dense(16, activation='relu'))(decoder_lstm)
+    decoder_lstm = TimeDistributed(Dense(1, activation='relu'))(decoder_lstm)
+    decoder_lstm = Flatten()(decoder_lstm)
 
-  decoder_outputs = sum(decoder_lstm, axis=1, keepdims=True)
+    decoder_outputs = sum(decoder_lstm, axis=1, keepdims=True)
 
-  return Model(decoder_inputs, decoder_outputs, name='LSTM_4')
+    return Model(decoder_inputs, decoder_outputs, name='LSTM_4')
 
 
 
 def Convolution_5():
-  inputs = Input(shape=(24,11), name='inputs')
-  x = Conv1D(32,7, activation='relu')(inputs)
-  x = MaxPooling1D(2)(x)
-  x = Conv1D(32,7, activation='relu')(x)
-  x = tf.keras.layers.GlobalMaxPooling1D()(x)
-  outputs = Dense(1, activation='relu', name='dense_6')(x)
-  return Model(inputs, outputs, name='Convolution_5')
+    inputs = Input(shape=(24,11), name='inputs')
+    x = Conv1D(32,7, activation='relu')(inputs)
+    x = MaxPooling1D(2)(x)
+    x = Conv1D(32,7, activation='relu')(x)
+    x = tf.keras.layers.GlobalMaxPooling1D()(x)
+    outputs = Dense(1, activation='relu', name='dense_6')(x)
+    return Model(inputs, outputs, name='Convolution_5')
 
 
 
