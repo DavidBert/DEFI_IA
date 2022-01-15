@@ -15,7 +15,16 @@ from datetime import date
 #import matplotlib.dates
 from numpy import genfromtxt
 import csv
-import xarray as xr
+import tensorflow.keras as keras
+from keras.models import Model, load_model
+from keras.layers import Input,ConvLSTM2D,TimeDistributed,Concatenate,Add,Bidirectional,Concatenate, dot, add, multiply,
+           Activation, Reshape, Dense, RepeatVector, Dropout, Permute, LSTM, Dense, Flatten, Embedding
+from keras.layers.convolutional import Conv3D,Conv2D,SeparableConv2D, Cropping2D, Cropping3D,Conv2DTranspose, UpSampling2D, DepthwiseConv2D, MaxPooling2D, Conv1D, MaxPooling1D
+from keras.layers import Lambda
+from keras import backend as K
+from keras.backend import sum
+from keras import initializers as KI
+import tensorflow as tf
 ###################################### Fichiers *.py à importer
 import fonctions
 ######################################
@@ -249,3 +258,6 @@ if __name__=='__main__':
     print("----- Sauvegarde du fichier final à déposer sur Kaggle en cours : retrouvez-le dans votre dossier OUTPUT -----")
     mise_en_forme_prediction_kagglev2(Y_forecast_moyenne_4_modeles,output_folder)
     print("----- Done ! -----")
+    
+    te = time.time()
+    print("Temps écoulé :", te-ts)
