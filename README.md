@@ -17,6 +17,7 @@ Nous avons donc créé un groupe de réseaux de neurones dont chacun des membres
 
 ## Fichiers présents sur le git :
 * `requirements.txt` qui contient tous les packages nécessaires au projet.
+*  `DefiIA_Rapport.pdf` qui notre rapport.
 * `train.py` programme principal qui va entraîner le groupe de réseaux de neurones et fournir le fichier `predictions_ENM_Les_Rainettes.csv`.
 * `fonctions.py` qui contient toutes les fonctions qui vont être appelées et utilisées dans `train.py` et `preprocessing.py`.
 * `preprocessing.py` à utiliser UNIQUEMENT sur les [data](https://www.kaggle.com/c/defi-ia-2022/data) de Kaggle si impossibilité de télécharger les fichiers pré-traités.
@@ -61,7 +62,9 @@ Nous avons donc créé un groupe de réseaux de neurones dont chacun des membres
     ```
     b) Dézipper tous les fichiers dans un dossier dont vous renseignerez le chemin d'accès lors de l'exécution du `preprocessing.py`.
     
-    c) Exécuter la commande suivante pour générer dans votre dossier les data pré-traités pour la suite :
+    c) Placer les fichiers *.nc* d'arome2D (dézippés depuis les fichiers grib) dans un sous-dossier nommé 2D_arome. On a ainsi l'arborescence PATH_TO_YOUR_DATA_FOLDER/2D_arome suivante.
+    
+    d) Exécuter la commande suivante pour générer dans votre dossier les data pré-traités pour la suite :
     ```console
     python preprocessing.py --data_path PATH_TO_YOUR_DATA_FOLDER --output_folder PATH_TO_YOUR_DATA_FOLDER
     ```
