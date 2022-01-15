@@ -17,8 +17,8 @@ In this project we have used docker and docker compose to facilitate the use and
 
 #### 2) download data 
 
-Download X_data.csv: https://drive.google.com/file/d/1wp55CCp_zzNanFia6ZRFL8A3CSTYTFoy/view?usp=sharing
-Download X_test.csv: https://drive.google.com/file/d/1Xu91vjdfLq9G6ZRpTcsVQAYYoIJY6V7o/view?usp=sharing
+Download X_data.csv: https://drive.google.com/file/d/1Xu91vjdfLq9G6ZRpTcsVQAYYoIJY6V7o/view?usp=sharing 
+Download X_test.csv: https://drive.google.com/file/d/1wp55CCp_zzNanFia6ZRFL8A3CSTYTFoy/view?usp=sharing
 and put the two files in train/data
 
 #### 3) Build the environment
