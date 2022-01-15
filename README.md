@@ -18,6 +18,7 @@ Nous avons donc créé un groupe de réseaux de neurones dont chacun des membres
 ## Fichiers présents sur le git :
 * `requirements.txt` qui contient tous les packages nécessaires au projet.
 *  `DefiIA_Rapport.pdf` qui notre rapport.
+*  `Defi_IA.ipynb` qui est notre notebook où tout a été référencé.
 * `train.py` programme principal qui va entraîner le groupe de réseaux de neurones et fournir le fichier `predictions_ENM_Les_Rainettes.csv`.
 * `fonctions.py` qui contient toutes les fonctions qui vont être appelées et utilisées dans `train.py` et `preprocessing.py`.
 * `preprocessing.py` à utiliser UNIQUEMENT sur les [data](https://www.kaggle.com/c/defi-ia-2022/data) de Kaggle si impossibilité de télécharger les fichiers pré-traités.
