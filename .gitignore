@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# Data directories and zipped files
+*.tar.gz
+*.zip
+plots/
+Data/
+Submissions/
+Test/
+Train/
+X_forecast/
+2D_arome_2016/
+2D_arpege_2016/
+3D_arpege_2016/
+2D_arome_2017/
+2D_arpege_2017/
+3D_arpege_2017/
+2D_arome_test/
+2D_arpege_test/
+3D_arpege_test/
+Submissions/
