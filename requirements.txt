@@ -1,0 +1,11 @@
+###### Packages à installer #####
+
+matplotlib
+numpy
+scipy
+xarray
+argparse
+pandas
+netcdf4
+tensorflow
+keras
